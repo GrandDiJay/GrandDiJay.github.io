@@ -4,14 +4,77 @@ body {
     background-size: cover;
 }
 
-h1 {
-    text-align: center;
-    position: absolute;
-    top: 41%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white
+
+@keyframes riseAnimation {
+  0% {
+      top: 100%; 
+  }
+  50% {
+      top: 35%; 
+  }
+  100% {
+      top: 41%; 
+  }
 }
+
+
+@keyframes riseAnimationitch {
+  0% {
+      top: 100%; 
+  }
+  50% {
+      top: 35%; 
+  }
+  100% {
+      top: 55%; 
+  }
+}
+
+
+@keyframes riseAnimationgit {
+  0% {
+      top: 100%; 
+  }
+  50% {
+      top: 35%; 
+  }
+  100% {
+      top: 55%; 
+  }
+}
+
+
+
+h1 {
+  text-align: center;
+  position: absolute;
+  top: 41%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  animation: riseAnimation 2s ease-in-out; 
+}
+
+#custom-button {
+  background-color: transparent; 
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 55%;
+  left: -59%;
+  animation: riseAnimationitch 2s ease-in-out;
+}
+
+#custom-button2 {
+  background-color: transparent; 
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 55%;
+  left: -33%;
+  animation: riseAnimationgit 2s ease-in-out;
+}
+
 
 body {
     font-family: 'M PLUS Rounded 1c', sans-serif;

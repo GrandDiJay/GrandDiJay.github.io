@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chujin Save Editor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap">
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+        }
+
+        h1 {
+            margin: 20px 0;
+        }
+
+        #savFileInput {
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .editable-capsule {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #222;
+        }
+
+        #downloadButton {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chujin Save Editor</h1>
+    
+    <input type="file" id="savFileInput" accept=".sav">
+    <button onclick="loadFile()">Load File</button>
+
+    <div id="displayValues"></div>
+
+    <button id="downloadButton" onclick="downloadChanges()" style="display:none;">Download Changes</button>
+
+    <script>
+        let currentFileContent = "";
+
+        function loadFile() {
+            const fileInput = document.getElementById('savFileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentFileContent = e.target.result;
+                    displayValues();
+                };
+
+                reader.readAsText(file);
+            }
+        }
+
+        function displayValues() {
+            const values = currentFileContent.match(/[A-Za-z]+="[^"]+"/g);
+            const displayContainer = document.getElementById('displayValues');
+            const downloadButton = document.getElementById('downloadButton');
+
+            if (values) {
+                displayContainer.innerHTML = "<h3>Detected Values:</h3>";
+                values.sort(); // Sort values alphabetically
+                values.forEach(value => {
+                    const parts = value.split('=');
+                    const key = parts[0];
+                    const val = parts[1].replace(/"/g, '');
+
+                    // Create editable capsule
+                    const capsule = document.createElement('div');
+                    capsule.className = 'editable-capsule';
+
+                    // Create label for the detected value
+                    const label = document.createElement('div');
+                    label.innerHTML = `<strong>${key}:</strong>`;
+                    capsule.appendChild(label);
+
+                    // Create editable input field
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                    inputField.value = val;
+                    inputField.oninput = function () {
+                        downloadButton.style.display = 'block';
+                    };
+                    capsule.appendChild(inputField);
+
+                    displayContainer.appendChild(capsule);
+                });
+
+                downloadButton.style.display = 'none';
+            } else {
+                displayContainer.innerHTML = "";
+                downloadButton.style.display = 'none';
+            }
+        }
+
+        function downloadChanges() {
+            const editableInputs = document.querySelectorAll('.editable-capsule input');
+            editableInputs.forEach(input => {
+                const key = input.previousSibling.textContent.replace(':', '');
+                const value = input.value;
+
+                // Replace the value in the currentFileContent
+                const regex = new RegExp(`${key}="[^"]+"`);
+                currentFileContent = currentFileContent.replace(regex, `${key}="${value}"`);
+            });
+
+            const blob = new Blob([currentFileContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'Save.sav';
+            link.click();
+        }
+    </script>
+</body>
+</html>

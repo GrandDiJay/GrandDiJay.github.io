@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undertale Integrity</title>
+    <link rel="icon" href="icon.png" type="image/png">
     <style>
         @font-face {
             font-family: 'YourFont';
@@ -17,6 +18,19 @@
             background-image: url('BG.gif');
             background-repeat: repeat;
             background-size: auto;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: black;
+            padding: 20px;
+            border-bottom: 5px solid white;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 20px;
         }
         .title {
             text-align: center;
@@ -36,35 +50,133 @@
             display: flex;
             justify-content: space-around;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
         .image-container img {
-            width: 250px; /* Adjust GYATT width */
+            width: 200px; /* Adjusted width */
             height: auto;
             cursor: pointer;
+            margin: 10px;
+        }
+        .footer {
+            background-color: black;
+            text-align: center;
+            padding: 20px;
+            border-top: 5px solid white;
+            font-size: 18px;
+        }
+        @media (max-width: 600px) {
+            .navbar a {
+                font-size: 16px;
+                margin: 0 10px;
+            }
+            .content {
+                padding: 20px;
+                font-size: 18px;
+            }
+            .image-container img {
+                width: 150px;
+            }
+        }
+        .character-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 20px;
+        }
+        .character-profile {
+            display: inline-block;
+            width: 300px; /* Adjust as needed */
+            vertical-align: top;
+            margin-right: 20px;
+        }
+        .character-profile img {
+            width: 100%; /* Adjust as needed */
+            height: auto;
+        }
+        .character-profile h3 {
+            margin: 10px 0;
+        }
+        .artist-link {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="title">
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <a href="#story">Story</a>
+        <a href="#characters">Characters</a>
+        <a href="#links">Links</a>
+    </div>
+
+    <div class="title" id="home">
         <h1>Undertale Integrity</h1>
     </div>
-    <div class="content">
-        <!-- SIGMA CONTENT GOES HERE -->
+
+    <div class="content" id="story">
+        <h2>The Story</h2>
         <p> 
             Welcome to UNDERTALE INTEGRITY, a fan prequel to Toby Fox's 2015 Undertale.
 
             Embark on a journey with Melody, a young soul, as they venture into the mysterious depths of the Underground. As Melody explores this enigmatic realm, encounters with monsters become inevitable. But amidst the shadows, who can be trusted?
             
             In this immersive narrative adventure, every decision you make shapes Melody's path. Forge unlikely alliances or face unforeseen adversaries as you navigate through the twists and turns of the underground world. From the echoes of past conflicts to the whispers of destiny, the choices you make will lead Melody towards their ultimate fate.
-
         </p>
     </div>
 
-    <!-- SKIBIDI Image Links -->
-    <div class="image-container">
+    <div class="content" id="characters">
+        <h2>Characters</h2>
+        <p>Meet the diverse characters of UNDERTALE INTEGRITY, each with their own unique stories and backgrounds. Who will become your ally and who will turn against you?</p>
+        
+        <div class="character-container">
+            <div class="character-profile">
+                <img src="melody.jpg" alt="Melody">
+                <div>
+                    <h3>Melody</h3>
+                    <p></p>
+                    <p class="artist-link"><a href="https://x.com/daydreamdeputy" id="melody-artist">Artist: EnigmaImagines</a></p>
+                </div>
+            </div>
+
+            <div class="character-profile">
+                <img src="soulscythe.gif" alt="Soulscythe">
+                <div>
+                    <h3>Soulscythe</h3>
+                    <p></p>
+                    <p class="artist-link"><a href="https://x.com/sandscourge" id="soulscythe-artist">Artist: Sandscourge</a></p>
+                </div>
+            </div>
+
+            <div class="character-profile">
+                <img src="aurelia.png" alt="Aurelia">
+                <div>
+                    <h3>Aurelia</h3>
+                    <p></p>
+                    <p class="artist-link"><a href="https://x.com/marsh_ber" id="aurelia-artist1">Artist: Marshie</a></p>
+                    <p class="artist-link"><a href="https://x.com/gvsta64" id="aurelia-artist2">Artist: Gvsta64</a></p>
+                </div>
+            </div>
+            
+
+            <div class="character-profile">
+                <img src="cogitare.jpg" alt="Cogitare">
+                <div>
+                    <h3>Cogitare</h3>
+                    <p></p>
+                    <p class="artist-link"><a href="https://x.com/clownboo_Art" id="cogitare-artist">Artist: Jewel</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-container" id="links">
         <a href="https://twitter.com/UTIntegrity"><img src="twitter.png" alt="Twitter"></a>
         <a href="https://gamejolt.com/games/utintegrity/869156"><img src="gamejolt.png" alt="GameJolt"></a>
         <a href="https://discord.gg/py6mwpP5FT"><img src="discord.png" alt="Discord"></a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; UNDERTALE © 2015 created by Toby Fox and Temmie Chang.</p>
     </div>
 </body>
 </html>

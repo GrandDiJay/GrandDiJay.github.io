@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omori Manga Reader</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light-mode {
+            background-color: #ECF0F1;
+            color: #2C3E50;
+        }
+
+        body.dark-mode {
+            background-color: #1C1C1C;
+            color: #F0F0F0;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #2C3E50;
+            color: white;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: background-color 0.3s;
+        }
+
+        body.light-mode #sidebar {
+            background-color: #2C3E50;
+        }
+
+        body.dark-mode #sidebar {
+            background-color: #333333;
+        }
+
+        #sidebar h1 {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #34495E;
+            font-size: 1.5em;
+        }
+
+        #chapter-list {
+            list-style-type: none;
+            padding: 10px;
+        }
+
+        #chapter-list li {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #34495E;
+            transition: background-color 0.3s;
+        }
+
+        #chapter-list li:hover {
+            background-color: #34495E;
+        }
+
+        #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        body.light-mode #main-content {
+            background-color: #ECF0F1;
+        }
+
+        body.dark-mode #main-content {
+            background-color: #1C1C1C;
+        }
+
+        #reader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        #reader img {
+            max-width: 90%;
+            max-height: 90vh;
+            display: none; /* Hide all images initially */
+            transition: transform 0.3s;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            color: rgba(44, 62, 80, 0.8);
+            cursor: pointer;
+            user-select: none;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+
+        .arrow:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        #left-arrow {
+            left: 10px;
+        }
+
+        #right-arrow {
+            right: 10px;
+        }
+
+        #zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .zoom-button {
+            background-color: #2C3E50;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .zoom-button:hover {
+            background-color: #34495E;
+        }
+
+        #dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #2C3E50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #dark-mode-toggle:hover {
+            background-color: #34495E;
+        }
+
+        @media screen and (max-width: 768px) {
+            #sidebar {
+                width: 70px;
+            }
+
+            #sidebar h1 {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            #chapter-list li {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .arrow {
+                font-size: 2em;
+            }
+
+            #zoom-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            #dark-mode-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div id="app">
+        <div id="sidebar">
+            <h1>Omori Manga</h1>
+            <ul id="chapter-list">
+                <!-- Chapter list will be populated here -->
+            </ul>
+        </div>
+        <div id="main-content">
+            <div id="reader">
+                <!-- Navigation arrows for desktop -->
+                <div id="left-arrow" class="arrow">&#8249;</div>
+                <div id="right-arrow" class="arrow">&#8250;</div>
+            </div>
+            <div id="zoom-controls">
+                <button class="zoom-button" id="zoom-in">Zoom In</button>
+                <button class="zoom-button" id="zoom-out">Zoom Out</button>
+            </div>
+            <button id="dark-mode-toggle">Toggle Dark Mode</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chapterList = document.getElementById('chapter-list');
+            const reader = document.getElementById('reader');
+            const leftArrow = document.getElementById('left-arrow');
+            const rightArrow = document.getElementById('right-arrow');
+            const zoomInButton = document.getElementById('zoom-in');
+            const zoomOutButton = document.getElementById('zoom-out');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const body = document.body;
+
+            // Sample data structure for Omori manga chapters
+            const mangaData = {
+                'Omori': {
+                    chapters: {
+                        'Chapter 1': Array.from({ length: 60 }, (_, i) => `${String(i + 1).padStart(2, '0')}.jpg`),
+                        'Chapter 2': Array.from({ length: 43 }, (_, i) => `${String(i + 1).padStart(2, '0')}.jpg`),
+                        'Chapter 3': Array.from({ length: 48 }, (_, i) => `${String(i + 1).padStart(2, '0')}.jpg`),
+                    }
+                }
+            };
+
+            let currentChapterImages = [];
+            let currentImageIndex = 0;
+            let zoomLevel = 1;
+
+            // Load chapters for Omori
+            const chapters = mangaData['Omori'].chapters;
+            for (let chapter in chapters) {
+                let li = document.createElement('li');
+                li.textContent = chapter;
+                li.addEventListener('click', function () {
+                    loadImages(chapter);
+                });
+                chapterList.appendChild(li);
+            }
+
+            function loadImages(chapter) {
+                currentChapterImages = mangaData['Omori'].chapters[chapter];
+                currentImageIndex = 0;
+
+                // Clear only the images from the reader
+                Array.from(reader.querySelectorAll('img')).forEach(img => img.remove());
+
+                currentChapterImages.forEach(function (image, index) {
+                    let img = document.createElement('img');
+                    img.src = `manga/Omori/${chapter}/${image}`;
+                    img.style.display = index === 0 ? 'block' : 'none'; // Show only the first image initially
+                    reader.appendChild(img);
+                });
+
+                showImage(0);
+                updateArrowsVisibility();
+            }
+
+            function showImage(index) {
+                const images = reader.querySelectorAll('img');
+                if (index < 0 || index >= images.length) return; // Out of bounds
+                images.forEach(img => img.style.display = 'none'); // Hide all images
+                images[index].style.display = 'block'; // Show the current image
+                currentImageIndex = index;
+                zoomLevel = 1; // Reset zoom on image change
+                updateZoom();
+                updateArrowsVisibility();
+            }
+
+            function updateArrowsVisibility() {
+                leftArrow.style.display = currentImageIndex > 0 ? 'block' : 'none';
+                rightArrow.style.display = currentImageIndex < currentChapterImages.length - 1 ? 'block' : 'none';
+            }
+
+            leftArrow.addEventListener('click', function () {
+                showImage(currentImageIndex - 1);
+            });
+
+            rightArrow.addEventListener('click', function () {
+                showImage(currentImageIndex + 1);
+            });
+
+            function updateZoom() {
+                const currentImage = reader.querySelectorAll('img')[currentImageIndex];
+                if (currentImage) {
+                    currentImage.style.transform = `scale(${zoomLevel})`;
+                }
+            }
+
+            zoomInButton.addEventListener('click', function () {
+                zoomLevel += 0.2;
+                updateZoom();
+            });
+
+            zoomOutButton.addEventListener('click', function () {
+                if (zoomLevel > 0.4) { // Prevent zooming out too much
+                    zoomLevel -= 0.2;
+                    updateZoom();
+                }
+            });
+
+            darkModeToggle.addEventListener('click', function () {
+                body.classList.toggle('dark-mode');
+                body.classList.toggle('light-mode');
+            });
+
+            // Initial load of the first chapter
+            loadImages('Chapter 1');
+        });
+    </script>
+</body>
+</html>
